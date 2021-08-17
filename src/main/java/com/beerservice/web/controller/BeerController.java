@@ -34,7 +34,7 @@ public class BeerController {
         //todo impl
     }
 
-    @PutMapping("{beerId}")
+    @PutMapping("/{beerId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateBeerById(@PathVariable UUID beerId, @RequestBody BeerDto beerDto) {
 
