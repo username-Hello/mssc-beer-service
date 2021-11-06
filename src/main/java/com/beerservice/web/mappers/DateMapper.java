@@ -1,12 +1,12 @@
 package com.beerservice.web.mappers;
 
-import ch.qos.logback.core.joran.action.TimestampAction;
+import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
+@Component
 public class DateMapper {
 
     public OffsetDateTime asOffsetDateTime(Timestamp ts) {
