@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.UUID;
 
 import static com.beerservice.web.constant.WebConstants.BEER_ENDPOINT;
@@ -29,14 +30,14 @@ public class BeerController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveNewBeer(@RequestBody BeerDto beerDto) {
+    public void saveNewBeer(@Valid @RequestBody BeerDto beerDto) {
 
         //todo impl
     }
 
     @PutMapping("/{beerId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateBeerById(@PathVariable UUID beerId, @RequestBody BeerDto beerDto) {
+    public void updateBeerById(@PathVariable UUID beerId, @Valid @RequestBody BeerDto beerDto) {
 
         //todo imp;
     }
