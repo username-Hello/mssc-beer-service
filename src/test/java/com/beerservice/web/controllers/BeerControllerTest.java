@@ -23,6 +23,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(RestDocumentationExtension.class)
@@ -38,12 +39,18 @@ public class BeerControllerTest {
 
     @Test
     void getBeerById() throws Exception {
+        // this endpoint doesn't take any query parameter and ignore it
+        // I send "iscold" parameter to test RestDocs feature to create docs about query parameters
         mockMvc.perform(get(BEER_ENDPOINT + "/{beerId}", UUID.randomUUID())
+                        .param("iscold", "true")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("v1/beer", pathParameters(
-                        parameterWithName("beerId").description("UUID of desired beer to get")
-                )));
+                .andDo(document("v1/beer",
+                        pathParameters(
+                                parameterWithName("beerId").description("UUID of desired beer to get")),
+                        requestParameters(
+                                parameterWithName("iscold").description("Is Beer cold query parameter")
+                        )));
     }
 
     @Test
