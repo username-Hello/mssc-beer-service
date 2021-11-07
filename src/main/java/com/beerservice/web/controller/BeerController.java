@@ -25,7 +25,7 @@ public class BeerController {
     public ResponseEntity<BeerDto> getBeerById(@PathVariable UUID beerId) {
 
         //todo impl
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(new BeerDto(), HttpStatus.OK);
     }
 
     @PostMapping
