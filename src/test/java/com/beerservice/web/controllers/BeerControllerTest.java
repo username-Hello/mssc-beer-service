@@ -11,7 +11,10 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.constraints.ConstraintDescriptions;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -27,6 +30,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(RestDocumentationExtension.class)
@@ -73,21 +77,23 @@ public class BeerControllerTest {
         BeerDto beerDto = getValidBeerDto();
         String beerDtoAsString = objectMapper.writeValueAsString(beerDto);
 
+        ConstraintsFields fields = new ConstraintsFields(BeerDto.class);
+
         mockMvc.perform(post(BEER_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(beerDtoAsString))
                 .andExpect(status().isCreated())
                 .andDo(document("v1/beer",
                         requestFields(
-                                fieldWithPath("id").ignored(),
-                                fieldWithPath("version").ignored(),
-                                fieldWithPath("createdDate").ignored(),
-                                fieldWithPath("lastModifiedDate").ignored(),
-                                fieldWithPath("beerName").description("Name of the beer"),
-                                fieldWithPath("beerStyle").description("Style of Beer"),
-                                fieldWithPath("upc").description("Beer UPC").attributes(),
-                                fieldWithPath("price").description("Beer Price"),
-                                fieldWithPath("quantityOnHand").ignored()
+                                fields.withPath("id").ignored(),
+                                fields.withPath("version").ignored(),
+                                fields.withPath("createdDate").ignored(),
+                                fields.withPath("lastModifiedDate").ignored(),
+                                fields.withPath("beerName").description("Name of the beer"),
+                                fields.withPath("beerStyle").description("Style of Beer"),
+                                fields.withPath("upc").description("Beer UPC").attributes(),
+                                fields.withPath("price").description("Beer Price"),
+                                fields.withPath("quantityOnHand").ignored()
                         )));
     }
 
@@ -109,5 +115,21 @@ public class BeerControllerTest {
                 .upc(1L)
                 .price(new BigDecimal(1))
                 .build();
+    }
+
+    private static class ConstraintsFields {
+
+        private final ConstraintDescriptions constraintDescriptions;
+
+        public ConstraintsFields(Class<?> input) {
+            this.constraintDescriptions = new ConstraintDescriptions(input);
+        }
+
+        public FieldDescriptor withPath(String path) {
+            return fieldWithPath(path)
+                    .attributes(key("constraints")
+                            .value(StringUtils
+                                    .collectionToDelimitedString(this.constraintDescriptions.descriptionsForProperty(path), ".")));
+        }
     }
 }
