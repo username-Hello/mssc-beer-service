@@ -38,7 +38,6 @@ public class BeerDto {
 
     @NotNull
     private BeerStyleEnum beerStyle;
-    // /org/springframework/restdocs/templates/request-fields.snippet
 
     @NotNull
     @Positive
